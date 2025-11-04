@@ -1,0 +1,49 @@
+.hero-glow-text {
+  position: relative;
+  background: linear-gradient(90deg, #adbdff 30%, #fff 50%, #adbdff 70%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: glowWave 2.6s linear infinite;
+  letter-spacing: -2px;
+  filter: drop-shadow(0 2px 10px rgba(170,200,255,0.3));
+}
+
+@keyframes glowWave {
+  0% { background-position: 200% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* Telegram button pulse animation */
+.telegram-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.telegram-btn .pulse-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #47c2ff 45%, #417fed 100%);
+  box-shadow: 0 0 12px #47c2ff99, 0 0 4px #47c2ff99;
+  animation: btnPulse 1.2s cubic-bezier(.47,1.64,.41,.97) infinite;
+}
+
+@keyframes btnPulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .hero-glow-text {
+    font-size: 2rem;
+    letter-spacing: -1px;
+  }
+  .telegram-btn {
+    font-size: 1rem;
+    padding: 0.75rem 1.2rem;
+  }
+}
