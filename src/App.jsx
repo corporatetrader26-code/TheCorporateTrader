@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 import CursorGlow from "./components/TempCursorGlow";
 
 import "./index.css";
-import "./Hero.css";
+import "./components/Hero.css";
 
 function App() {
   return (
