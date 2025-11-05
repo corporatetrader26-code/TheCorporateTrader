@@ -1,11 +1,15 @@
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-white/10 mt-20 py-12 px-6 bg-transparent">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+    <footer className="w-full border-t border-white/10 mt-20 py-12 px-6 bg-transparent relative overflow-hidden">
 
+      {/* ✨ Glowing Divider Line */}
+      <div className="footer-glow absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#00aaff] to-transparent opacity-50"></div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mt-4">
+        
         {/* Brand Info */}
         <div>
-          <h3 className="text-xl font-semibold">The Signaler</h3>
+          <h3 className="text-xl font-semibold">The Corporate Trader</h3>
           <p className="text-gray-400 mt-3 leading-relaxed">
             Precision-guided trading signals for disciplined
             options & futures traders.
@@ -26,7 +30,7 @@ export default function Footer() {
         <div>
           <h4 className="text-lg font-medium mb-4">Connect</h4>
           <a
-            href="https://t.me/thesignaler"
+            href="https://t.me/+1G2MYj8eFes2YWY1"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-black px-5 py-3 rounded-full font-medium hover:opacity-90 transition"
@@ -34,13 +38,14 @@ export default function Footer() {
             🚀 Join Telegram
           </a>
 
-          <p className="text-gray-400 mt-4 text-sm">support@thesignaler.com</p>
+          <p className="text-gray-400 mt-4 text-sm">support@thecorporatetrader.com</p>
         </div>
 
       </div>
 
+      {/* Copyright */}
       <div className="text-center text-gray-500 text-sm mt-12">
-        © 2025 The Signaler. All rights reserved.
+        © 2025 The Corporate Trader. All rights reserved.
       </div>
     </footer>
   );

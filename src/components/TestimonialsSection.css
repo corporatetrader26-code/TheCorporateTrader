@@ -1,0 +1,24 @@
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  display: flex;
+  animation: marquee-left 30s linear infinite;
+  width: max-content;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+  .marquee {
+    animation-duration: 40s;
+  }
+}

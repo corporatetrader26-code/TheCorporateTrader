@@ -21,13 +21,13 @@ export default function SnowEffect() {
       number: { value: 45 }, // MORE snow
       color: { value: "#ffffff" },
       opacity: {
-        value: 0.9,
+        value: 0.6,
         animation: { enable: true, speed: 1, minimumValue: 0.3 },
       },
-      size: { value: { min: 1, max: 3 } },
+      size: { value: { min: 1, max: 2 } },
       move: {
         enable: true,
-        speed: 8, // ⬅ MUCH faster
+        speed: 3, // ⬅ MUCH faster
         direction,
         straight: false,
         outModes: { default: "out" },

@@ -3,10 +3,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Youtube = () => {
   const videos = [
-    "https://www.youtube.com/embed/7dhGHH2z7nY?si=DiGACqwW5Q346t28",
-    "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    "https://www.youtube.com/embed/tgbNymZ7vqY",
-    "https://www.youtube.com/embed/ysz5S6PUM-U",
+    "https://www.youtube.com/embed/Y710_VOPHdw?si=oA5iyU07bpQo-7DX",
+    "https://www.youtube.com/embed/IVLBtl2uiCM?si=F08olE__ifNZdIJ_",
+    "https://www.youtube.com/embed/kM1FIMTKS3Q?si=ABaFvlrAo9p-TsfM",
+    "//www.youtube.com/embed/jinKDtvkFAk?si=F52IC48QmtjCdWrG",
   ];
 
   const [current, setCurrent] = useState(0);

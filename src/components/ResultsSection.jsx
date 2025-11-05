@@ -1,4 +1,5 @@
 import React from "react";
+import "./ResultSection.css"; // We'll add custom animation CSS here
 
 const ResultsSection = () => {
   const results = [
@@ -29,38 +30,47 @@ const ResultsSection = () => {
   ];
 
   return (
-    <section className="w-full py-24 text-center relative overflow-hidden">
-
+    // ✅ Added id="result" and scroll-mt-24 here
+    <section
+      id="result"
+      className="scroll-mt-24 w-full py-24 text-center relative overflow-hidden bg-[#0a0a0f]"
+    >
       <h2 className="text-4xl font-bold mb-4">
         Results speak for <i>themselves.</i>
       </h2>
-      <p className="text-gray-400 mb-14 max-w-2xl mx-auto">
+      <p className="text-gray-400 mb-14 max-w-2xl mx-auto px-4">
         Consistent, structured guidance backed by real market methodology.
       </p>
 
       {/* Fade Edges */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
 
-      {/* MARQUEE WRAPPER */}
-      <div className="overflow-hidden w-full">
-        <div className="flex items-center gap-12 animate-marquee-left whitespace-nowrap">
-
+      {/* Marquee Container */}
+      <div className="relative w-full overflow-hidden">
+        <div className="marquee flex gap-8 whitespace-nowrap">
           {[...results, ...results].map((card, index) => (
             <div
               key={index}
-              className="inline-block w-[360px] md:w-[420px] bg-gradient-to-br
-              from-[#161616] to-[#0d0d0d] border border-white/10 rounded-3xl overflow-hidden
+              className="inline-block w-[280px] sm:w-[320px] md:w-[360px] lg:w-[400px] 
+              bg-gradient-to-br from-[#161616] to-[#0d0d0d] border border-white/10 rounded-3xl overflow-hidden
               shadow-xl hover:scale-[1.05] transition-transform duration-300"
             >
-              <img src={card.img} className="w-full h-60 object-cover" />
+              <img
+                src={card.img}
+                className="w-full h-48 sm:h-60 object-cover"
+                alt={card.title}
+              />
 
-              <div className="p-6 text-left">
-                <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
+              <div className="p-5 text-left">
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">{card.title}</h3>
                 <p className="text-gray-400 text-sm mb-4">{card.subtitle}</p>
 
                 <div className="flex flex-wrap gap-2">
                   {card.tags.map((tag, i) => (
-                    <span key={i} className="px-3 py-1 rounded-full text-xs border border-white/15 text-gray-300">
+                    <span
+                      key={i}
+                      className="px-3 py-1 rounded-full text-xs border border-white/15 text-gray-300"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -68,7 +78,6 @@ const ResultsSection = () => {
               </div>
             </div>
           ))}
-
         </div>
       </div>
     </section>
