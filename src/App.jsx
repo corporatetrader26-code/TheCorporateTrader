@@ -9,7 +9,7 @@ import TestimonialsSection from "./components/TestimonialsSection";
 import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
-import CursorGlow from "./components/CursorGlow";
+import CursorGlow from "./components/TempCursorGlow";
 
 
 import "./index.css";
