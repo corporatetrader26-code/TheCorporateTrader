@@ -3,7 +3,7 @@ import Navbar from "./components/navbar";
 import Hero from "./components/hero";
 import Youtube from "./components/youtube";
 import FeaturesSection from "./components/FeaturesSection";
-import SnowEffect from "./components/SnowEffect";
+import SnowEffect from "./components/snoweffect";
 import ResultsSection from "./components/ResultsSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import FAQSection from "./components/FAQSection";
