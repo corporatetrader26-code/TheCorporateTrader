@@ -37,7 +37,7 @@ const Navbar = () => {
           onClick={(e) => handleSmoothScroll(e, "#hero")}
         >
           <img
-            src="src\logo.png" // ✅ replace this path with your logo
+            src="/logo.png" // ✅ replace this path with your logo
             alt="The Corporate Trade"
            className="h-22 sm:h-30 md:h-40 w-auto object-contain transition-transform duration-300 hover:scale-105"
 
