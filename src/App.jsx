@@ -3,7 +3,7 @@ import Navbar from "./components/navbar";
 import Hero from "./components/hero";
 import Youtube from "./components/youtube";
 import FeaturesSection from "./components/FeaturesSection";
-import SnowEffect from "./components/snoweffect";
+import SnowEffect from "./components/SnowEffect";
 import ResultsSection from "./components/ResultsSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import FAQSection from "./components/FAQSection";
@@ -11,9 +11,8 @@ import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import CursorGlow from "./components/TempCursorGlow";
 
-
 import "./index.css";
-import "./hero.css";
+import "./Hero.css";
 
 function App() {
   return (
