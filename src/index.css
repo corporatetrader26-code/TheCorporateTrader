@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+html, body {
+  overflow-x: hidden;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* GLOBAL BASE RESET */
 @layer base {
   html, body, #root {
     height: 100%;
@@ -11,122 +16,67 @@
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
-    background-color: #0a0a0f;
+    background-color: transparent !important; /* Unity: bg controlled in App.jsx */
     color: #f5f5f5;
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
   }
-
-  body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  #root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  a {
-    color: #a3bffa;
-    transition: color 0.3s ease;
-  }
-
-  a:hover {
-    color: #c7d2fe;
-  }
 }
 
+/* UTILITIES */
 @layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.8s ease-in forwards;
-  }
-
-  .animate-fade-in-delay {
-    animation: fadeIn 1.2s ease-in 0.3s both;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.8s ease-out forwards;
-  }
-
-  .animate-float-slow {
-    animation: floatSlow 6s ease-in-out infinite;
-  }
-
   .animate-glow-pulse {
     animation: glowPulse 3s ease-in-out infinite;
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* ✅ SMOOTH MARQUEE (for testimonials & result section) */
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.animate-marquee-left {
+  animation: marquee-left 28s linear infinite;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .animate-marquee-left {
+    animation-duration: 38s; /* slower, smoother on larger screens */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
+/* ✅ Glow Pulse */
 @keyframes glowPulse {
   0%, 100% { opacity: 0.25; }
   20% { opacity: 0.6; }
 }
 
-.bg-gradient-main {
-  background: linear-gradient(180deg, #0a0a0f 0%, #1a1a25 100%);
-}
-
-.full-page {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  overflow-y: auto; /* allow particles to be visible */
-  position: relative;
-}
-
+/* ✅ Background Glow Bubbles (Soft White/Ash Tones) */
 .glow-overlay {
   position: absolute;
   width: 400px;
   height: 400px;
-  filter: blur(120px);
-  opacity: 0.35;
+  filter: blur(140px);
+  opacity: 0.42;
   pointer-events: none;
   animation: glowPulse 6s ease-in-out infinite;
-  background: radial-gradient(circle, rgba(163,191,250,0.3) 0%, rgba(10,10,15,0) 70%);
-  z-index: 1;
+  background: radial-gradient(circle, rgba(255,255,255,0.32) 0%, rgba(10,10,15,0) 65%);
+  z-index: 0;
 }
 
 .glow-overlay.left {
-  top: -100px;
-  left: -100px;
+  top: -120px;
+  left: -120px;
 }
 
 .glow-overlay.right {
-  top: -100px;
-  right: -100px;
+  top: -120px;
+  right: -120px;
 }
+
+/* NAV FIX */
 nav {
-  z-index: 50; /* or higher */
+  z-index: 50;
 }

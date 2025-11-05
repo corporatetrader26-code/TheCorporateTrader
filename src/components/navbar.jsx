@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 const NAV_LINKS = [
-  { name: "Features", href: "https://www.thesignaler.com/#feature" },
-  { name: "Results", href: "https://www.thesignaler.com/#result" },
-  { name: "Pricing", href: "https://www.thesignaler.com/#pricing" },
-  { name: "Testimonials", href: "https://www.thesignaler.com/#testimonial" },
-  { name: "FAQs", href: "https://www.thesignaler.com/#faq" },
+  { name: "Features", href: "#feature" },
+  { name: "Results", href: "#result" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "Testimonials", href: "#testimonial" },
+  { name: "FAQs", href: "#faq" },
 ];
 
 const Navbar = () => {
@@ -15,13 +15,14 @@ const Navbar = () => {
     <nav
       className="fixed z-50 w-full max-w-4xl px-4 sm:px-6 lg:px-8 left-1/2 top-5 -translate-x-1/2 rounded-xl"
       style={{
-        backgroundColor: "rgba(10, 10, 15, 0.5)", // semi-transparent dark
+        backgroundColor: "rgba(10, 10, 15, 0.5)",
         backdropFilter: "blur(15px)",
-        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        boxShadow: "0 8px 32px 0 rgba(255, 255, 255, 0.15)",
       }}
     >
       <div className="flex items-center justify-between h-16">
-        <div className="text-white font-bold text-xl cursor-pointer select-none">
+
+        <div className="text-white font-semibold text-xl cursor-pointer select-none">
           The Signaler
         </div>
 
@@ -30,59 +31,35 @@ const Navbar = () => {
             <a
               key={name}
               href={href}
-              className="text-white hover:text-indigo-400 transition px-3 py-2 rounded-md text-sm font-medium"
+              className="text-white hover:opacity-90 transition px-3 py-2 text-sm"
             >
               {name}
             </a>
           ))}
         </div>
 
-        <div className="md:hidden">
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-indigo-400 focus:outline-none"
-            aria-expanded={mobileOpen}
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {mobileOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
+        {/* Mobile Toggle */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden text-white"
+        >
+          {mobileOpen ? "✕" : "☰"}
+        </button>
+
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden bg-gray-900 bg-opacity-70 rounded-b-xl backdrop-blur-md">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {NAV_LINKS.map(({ name, href }) => (
-              <a
-                key={name}
-                href={href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-indigo-400"
-                onClick={() => setMobileOpen(false)}
-              >
-                {name}
-              </a>
-            ))}
-          </div>
+        <div className="md:hidden bg-black/60 backdrop-blur-xl rounded-b-xl">
+          {NAV_LINKS.map(({ name, href }) => (
+            <a
+              key={name}
+              href={href}
+              onClick={() => setMobileOpen(false)}
+              className="block px-4 py-3 text-center text-white hover:opacity-80"
+            >
+              {name}
+            </a>
+          ))}
         </div>
       )}
     </nav>

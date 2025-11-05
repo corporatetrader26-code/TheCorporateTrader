@@ -13,65 +13,43 @@ export default function SnowEffect() {
 
   if (!init) return null;
 
-  const baseParticleConfig = {
-    number: { value: 15 },
-    color: { value: "#A3BFFA" },
-    shape: { type: "circle" },
-    opacity: {
-      value: 0.6,
-      animation: { enable: true, speed: 1, minimumValue: 0.3, sync: false }
-    },
-    size: { value: { min: 1, max: 1 } },
-    move: {
-      enable: true,
-      speed: 4,                // faster movement to fall farther
-      random: false,
-      outModes: { default: "out" },
-      straight: false          // natural drift
-    },
-    life: {
-      duration: { sync: true, value: 10 }, // longer lifetime
-      count: 0
-    }
-  };
-
-  const leftOptions = {
+  const snowConfig = (direction) => ({
     background: { color: "transparent" },
     fullScreen: { enable: false },
     detectRetina: true,
     particles: {
-      ...baseParticleConfig,
-      move: { ...baseParticleConfig.move, direction: "bottom-right" },
-    }
-  };
-
-  const rightOptions = {
-    background: { color: "transparent" },
-    fullScreen: { enable: false },
-    detectRetina: true,
-    particles: {
-      ...baseParticleConfig,
-      move: { ...baseParticleConfig.move, direction: "bottom-left" },
-    }
-  };
-
-  const containerStyle = {
-    width: "20vw",
-    minWidth: "150px",
-    maxWidth: "280px",
-    height: "45vh",
-    minHeight: "250px",
-    maxHeight: "600px",
-    pointerEvents: "none"
-  };
+      number: { value: 45 }, // MORE snow
+      color: { value: "#ffffff" },
+      opacity: {
+        value: 0.9,
+        animation: { enable: true, speed: 1, minimumValue: 0.3 },
+      },
+      size: { value: { min: 1, max: 3 } },
+      move: {
+        enable: true,
+        speed: 8, // ⬅ MUCH faster
+        direction,
+        straight: false,
+        outModes: { default: "out" },
+      },
+    },
+  });
 
   return (
     <>
-      <div className="absolute top-0 left-0" style={containerStyle}>
-        <Particles id="left-snow" options={leftOptions} style={{ width: "100%", height: "100%" }} />
+      {/* ✅ Strong Glow Background Layer */}
+      <div className="pointer-events-none absolute inset-0 z-[6]">
+        <div className="absolute left-[10%] top-[15%] w-[450px] h-[450px] bg-white opacity-[0.25] blur-[140px]"></div>
+        <div className="absolute right-[10%] top-[15%] w-[450px] h-[450px] bg-white opacity-[0.25] blur-[140px]"></div>
       </div>
-      <div className="absolute top-0 right-0" style={containerStyle}>
-        <Particles id="right-snow" options={rightOptions} style={{ width: "100%", height: "100%" }} />
+
+      {/* ✅ Snow Render Layer */}
+      <div className="absolute top-0 left-0 z-[7] w-[30vw] min-w-[200px] h-[70vh] pointer-events-none">
+        <Particles id="left-snow" options={snowConfig("bottom-right")} />
+      </div>
+
+      <div className="absolute top-0 right-0 z-[7] w-[30vw] min-w-[200px] h-[70vh] pointer-events-none">
+        <Particles id="right-snow" options={snowConfig("bottom-left")} />
       </div>
     </>
   );
