@@ -34,22 +34,24 @@ export default function Navbar() {
 
   // Works on both mobile & desktop
   const handleSmoothScroll = (e, href) => {
-    e.preventDefault();
+  e.preventDefault();
+  console.log("Clicked:", href); // 👈 Add this line
 
-    const target = document.querySelector(href);
-    if (!target) return;
+  const target = document.querySelector(href);
+  if (!target) {
+    console.log("Target not found:", href);
+    return;
+  }
 
-    // Close menu before scrolling
-    setMobileOpen(false);
+  setMobileOpen(false);
 
-    // Wait for menu to close before scrolling
-    setTimeout(() => {
-      const navHeight = navRef.current?.offsetHeight || 70;
-      const y =
-        target.getBoundingClientRect().top + window.scrollY - navHeight;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }, 200);
-  };
+  const navHeight = navRef.current?.offsetHeight || 70;
+  const y = target.getBoundingClientRect().top + window.scrollY - navHeight;
+  window.scrollTo({ top: y, behavior: "smooth" });
+};
+
+
+  
 
   return (
     <nav
