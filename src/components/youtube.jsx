@@ -46,11 +46,11 @@ const Youtube = () => {
   ];
 
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(0); // for slide direction
+  const [direction, setDirection] = useState(0);
   const mouse = useRef({ x: 0, y: 0 });
   const controls = useAnimation();
 
-  // === Animate gradient cycling between black shades ===
+  // === Animate subtle gradient background ===
   useEffect(() => {
     const animateGradient = async () => {
       await controls.start({
@@ -66,7 +66,7 @@ const Youtube = () => {
     animateGradient();
   }, [controls]);
 
-  // === Mouse & touch parallax ===
+  // === Mouse / touch movement for 3D parallax ===
   useEffect(() => {
     const handleMove = (e) => {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -83,10 +83,10 @@ const Youtube = () => {
     };
   }, []);
 
-  // === Swipe detection (mobile + desktop drag) ===
+  // === Swipe detection (touch + desktop drag) ===
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
-  const swipeThreshold = 50; // px to trigger swipe
+  const swipeThreshold = 50; // pixels required to trigger swipe
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
@@ -98,19 +98,17 @@ const Youtube = () => {
 
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
-
     const deltaX = touchEndX.current - touchStartX.current;
 
     if (Math.abs(deltaX) > swipeThreshold) {
-      if (deltaX > 0) handlePrev(); // swipe right → previous
-      else handleNext(); // swipe left → next
+      if (deltaX > 0) handlePrev();
+      else handleNext();
     }
 
     touchStartX.current = null;
     touchEndX.current = null;
   };
 
-  // Desktop pointer drag (for swipe on computers)
   const handlePointerDown = (e) => {
     handleTouchStart(e);
     window.addEventListener("pointermove", handleTouchMove);
@@ -124,19 +122,25 @@ const Youtube = () => {
     window.removeEventListener("pointerup", handlePointerUp);
   };
 
-  // === Navigation logic ===
+  // === Navigation ===
   const handleNext = () => {
     setDirection(1);
     setCurrent((prev) => (prev + 1) % videos.length);
+    if (navigator.vibrate) navigator.vibrate(20); // small haptic feedback
   };
+
   const handlePrev = () => {
     setDirection(-1);
     setCurrent((prev) => (prev - 1 + videos.length) % videos.length);
+    if (navigator.vibrate) navigator.vibrate(20);
   };
 
   return (
-    <section className="relative w-full py-20 flex flex-col items-center overflow-hidden text-white">
-      {/* === Animated Changing Black Gradient Background === */}
+    <section
+      id="video"
+      className="relative w-full py-20 flex flex-col items-center overflow-hidden text-white"
+    >
+      {/* === Animated background === */}
       <motion.div
         className="absolute inset-0"
         animate={controls}
@@ -146,54 +150,62 @@ const Youtube = () => {
         }}
       />
 
-      {/* === 3D Particle Field === */}
+      {/* === Particle Field === */}
       <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 5] }}>
           <Particles mouse={mouse} />
         </Canvas>
       </div>
 
-      {/* === YouTube Player with animation & swipe === */}
+      {/* === YouTube Carousel === */}
       <div
-        className="relative z-10 w-[90%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[900px] 
+        className="relative z-10 w-[90%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[900px]
                    aspect-video rounded-2xl overflow-hidden shadow-2xl"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onPointerDown={handlePointerDown}
       >
-        <AnimatePresence custom={direction} mode="wait">
-          <motion.iframe
-            key={current}
-            src={videos[current]}
-            allowFullScreen
-            className="w-full h-full rounded-2xl absolute"
-            initial={{ opacity: 0, x: direction > 0 ? 100 : -100, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: direction > 0 ? -100 : 100, scale: 0.95 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-          />
-        </AnimatePresence>
+        {/* iframe inside wrapper with pointer disabled */}
+        <div className="absolute inset-0 pointer-events-none">
+          <AnimatePresence custom={direction} mode="wait">
+            <motion.iframe
+              key={current}
+              src={videos[current]}
+              allowFullScreen
+              className="w-full h-full rounded-2xl"
+              initial={{ opacity: 0, x: direction > 0 ? 100 : -100, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: direction > 0 ? -100 : 100, scale: 0.95 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Transparent swipe layer over video */}
+        <div
+          className="absolute inset-0 z-20"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onPointerDown={handlePointerDown}
+        />
 
         {/* Navigation Buttons */}
         <button
           onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-4 rounded-full"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-30"
           aria-label="Previous video"
         >
-          <ChevronLeft className="text-white" size={36} />
+          <ChevronLeft className="text-white" size={28} />
         </button>
 
         <button
           onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-4 rounded-full"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-30"
           aria-label="Next video"
         >
-          <ChevronRight className="text-white" size={36} />
+          <ChevronRight className="text-white" size={28} />
         </button>
       </div>
 
-      {/* === Dots for Video Selection === */}
+      {/* Dots */}
       <div className="flex mt-6 gap-3 z-10">
         {videos.map((_, index) => (
           <button
@@ -205,8 +217,7 @@ const Youtube = () => {
             className={`w-3 h-3 rounded-full transition-all ${
               current === index ? "bg-white scale-125" : "bg-gray-500"
             }`}
-            aria-label={`Go to video ${index + 1}`}
-          ></button>
+          />
         ))}
       </div>
     </section>
