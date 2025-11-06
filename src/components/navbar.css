@@ -1,0 +1,121 @@
+/* === Base Glass Navbar (More Compact) === */
+.nav-glass {
+  background: linear-gradient(120deg, rgba(20, 20, 25, 0.75), rgba(10, 10, 15, 0.4));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    inset 0 0 15px rgba(0, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  height: 4.4rem; /* ⬇️ Reduced height from 5.4rem */
+  padding: 0 1rem;
+}
+
+/* === Shimmer Gradient Effect === */
+.nav-glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -200%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  animation: navShimmer 9s linear infinite;
+}
+
+@keyframes navShimmer {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* === Sticky Navbar Effect === */
+.nav-sticky {
+  background: rgba(10, 10, 15, 0.85) !important;
+  border-color: rgba(0, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 25px rgba(0, 255, 255, 0.08);
+  transform: scale(0.99);
+  backdrop-filter: blur(20px);
+}
+
+/* === Wrapper === */
+.navbar-wrapper {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  top: 1rem;
+  pointer-events: none;
+  transition: top 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  z-index: 60;
+}
+
+.navbar-top-sticky {
+  top: 0 !important;
+}
+
+.navbar-wrapper .nav-glass,
+.navbar-wrapper .nav-glass * {
+  pointer-events: auto;
+}
+
+/* === ✨ Logo Styling === */
+.logo-img {
+  display: block;
+  height: auto;
+  width: auto;
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+}
+
+/* 🖥️ Desktop Logo Sizes */
+.logo-lg {
+  height: 11rem; /* ⬇️ Reduced slightly for balance */
+}
+
+.logo-sm {
+  height: 9rem; /* compact sticky version */
+}
+
+/* 📱 Mobile Logo */
+.logo-mobile {
+  height: 9rem; /* smaller for tighter navbar */
+}
+
+/* ✨ Hover Glow Effect */
+.logo-img:hover {
+  transform: scale(1.07);
+  filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8))
+          drop-shadow(0 0 25px rgba(0, 255, 255, 0.4));
+}
+
+/* ✨ Glow Pulse Animation */
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(0, 255, 255, 1));
+  }
+}
+
+.logo-glow {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* === Hover Glow on Links === */
+.group:hover a span {
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  color: #00ffff;
+}

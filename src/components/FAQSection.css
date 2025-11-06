@@ -12,3 +12,54 @@
     transform: translateY(0);
   }
 }
+
+/* === Floating Question Marks === */
+.floating-mark {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+  user-select: none;
+  cursor: pointer;
+  pointer-events: auto;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  animation: floatDrift var(--speed, 10s) ease-in-out infinite;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+@keyframes floatDrift {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) translateX(var(--drift)) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-40px) translateX(calc(var(--drift) * -1)) rotate(-5deg);
+  }
+  75% {
+    transform: translateY(-20px) translateX(var(--drift)) rotate(3deg);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+}
+
+/* Pop on click */
+.floating-mark:active {
+  animation: popMark 0.4s ease forwards;
+}
+
+@keyframes popMark {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./components/navbar";
 import Hero from "./components/hero";
 import Youtube from "./components/youtube";
@@ -10,37 +10,43 @@ import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import CursorGlow from "./components/TempCursorGlow";
+import Preloader from "./components/Preloader"; // ✅ new
 
 import "./index.css";
-import "./components/Hero.css";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time (e.g. waiting for assets)
+    const timer = setTimeout(() => setIsLoading(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="relative min-h-screen w-full text-white overflow-x-hidden bg-gradient-to-b from-[#0a0a0a] to-[#111]">
+    <>
+      {isLoading && <Preloader isLoading={isLoading} />}
 
-      {/* ✅ Navbar stays on top */}
-      <Navbar />
-
-      {/* ✅ Main Page Content */}
-      <main className="relative z-[3] flex flex-col items-center w-full">
-        <Hero />
-        <Youtube />
-        <ResultsSection />
-        <FeaturesSection />
-        <TestimonialsSection />
-        <FAQSection />
-        <ContactSection />
-        <Footer />
-      </main>
-
-      {/* ✅ Cursor Glow Layer */}
-      <CursorGlow />
-
-      {/* ✅ Snow + Glow Layer (above background, below nav) */}
-      <div className="absolute inset-0 pointer-events-none z-[90]">
-        <SnowEffect />
-      </div>
-    </div>
+      {!isLoading && (
+        <div className="relative min-h-screen w-full text-white overflow-x-hidden bg-gradient-to-b from-[#0a0a0a] to-[#111]">
+          <Navbar />
+          <main className="relative z-[3] flex flex-col items-center w-full">
+            <Hero />
+            <Youtube />
+            <ResultsSection />
+            <FeaturesSection />
+            <TestimonialsSection />
+            <FAQSection />
+            <ContactSection />
+            <Footer />
+          </main>
+          <CursorGlow />
+          <div className="absolute inset-0 pointer-events-none z-[90]">
+            <SnowEffect />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

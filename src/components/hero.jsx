@@ -1,29 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Star } from "lucide-react";
 import "./Hero.css";
 
 export default function Hero() {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen to trigger auto animation
+  useEffect(() => {
+    const checkScreen = () => setIsMobile(window.innerWidth < 768);
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   return (
-    <section className="w-full min-h-[75vh] flex flex-col items-center justify-center text-center px-6 sm:px-12 md:px-20 pt-24 pb-10 relative overflow-hidden">
+    
+    <section
+    id="hero"
+    className="w-screen min-h-[75vh] flex flex-col items-center justify-center text-center px-6 sm:px-12 md:px-20 pt-24 pb-10 relative overflow-hidden">
 
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[450px] h-[450px] rounded-full bg-white blur-[150px] opacity-[0.10]"></div>
-      </div>
+      {/* === Removed background white glow for clean black aesthetic === */}
 
-      {/* ✅ Animated Star Rating */}
+      {/* 🌟 Interactive Star Rating (works on mobile & desktop) */}
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="mb-4 text-gray-400 text-lg tracking-wide"
+        className="mb-6 flex flex-col items-center select-none"
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={() => !isMobile && setIsHovered(false)}
       >
-        ★★★★★ <span className="ml-2 text-gray-300">1,500+ Verified Members</span>
+        <div className="flex items-center justify-center gap-2">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              animate={{
+                opacity: [0.7, 1, 0.7],
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 2 + i * 0.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Star
+                size={isMobile ? 26 : 34}
+                className={`transition-all duration-500 ${
+                  isHovered || isMobile
+                    ? "text-yellow-400 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]"
+                    : "text-gray-400 drop-shadow-[0_0_5px_rgba(255,255,255,0.1)]"
+                }`}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        <p className="mt-3 text-gray-300 text-lg shimmer-text">
+          1,500+ Verified Members
+        </p>
       </motion.div>
 
-      {/* Hero heading with shimmer */}
-      <h1 className="shimmer-text text-[3.5rem] md:text-[5rem] lg:text-[6.5rem] font-extrabold leading-tight">
+      {/* === Hero Heading with Shimmer === */}
+      <h1 className="shimmer-text text-[3rem] sm:text-[4.5rem] md:text-[5rem] lg:text-[6rem] font-extrabold leading-tight">
         Trade. Learn. Grow.
       </h1>
 
@@ -31,7 +72,7 @@ export default function Hero() {
         Master Options trading through disciplined execution and structured market understanding.
       </p>
 
-      {/* ✅ Telegram Button - same as Contact section */}
+      {/* 💬 Glowing Blue Telegram Button */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -45,11 +86,11 @@ export default function Hero() {
           rel="noopener noreferrer"
           whileHover={{
             scale: 1.1,
-            boxShadow: "0 0 50px rgba(0, 180, 255, 0.6)",
-            textShadow: "0 0 20px rgba(0, 180, 255, 0.9)",
+            boxShadow: "0 0 40px rgba(0, 180, 255, 0.7)",
+            textShadow: "0 0 15px rgba(0, 180, 255, 0.8)",
           }}
           whileTap={{ scale: 0.95 }}
-          className="telegram-button inline-flex items-center justify-center gap-3 text-lg font-bold px-10 py-4 rounded-full transition"
+          className="glow-blue-btn inline-flex items-center justify-center gap-3 text-lg font-bold px-10 py-4 rounded-full transition"
         >
           <MessageCircle size={22} /> Join Our Telegram
         </motion.a>
