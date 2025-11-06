@@ -14,75 +14,79 @@ export default function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const navRef = useRef(null);
 
+  // 🔹 Sticky Navbar Logic
   useEffect(() => {
-    // find the hero element
     const hero = document.getElementById("hero");
-    if (!hero) {
-      // hero not found — do nothing but keep navbar floating
-      return;
-    }
+    if (!hero) return;
 
-    // create observer: when hero is NOT intersecting (out of view) -> sticky
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // if hero is not intersecting the viewport -> navbar should be sticky
           setIsSticky(!entry.isIntersecting);
         });
       },
       {
         root: null,
-        rootMargin: "-80px 0px 0px 0px", // trigger slightly before hero fully out (adjust if needed)
+        rootMargin: "-80px 0px 0px 0px",
         threshold: 0,
       }
     );
 
     observer.observe(hero);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
+  // 🔹 Smooth scroll handler (mobile-friendly)
   const handleSmoothScroll = (e, href) => {
     e.preventDefault();
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      // close mobile menu first
       setMobileOpen(false);
+
+      // wait for menu close animation
+      setTimeout(() => {
+        const offset = -80; // height offset for sticky navbar
+        const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition + offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }, 300);
     }
   };
 
   return (
     <nav
       ref={navRef}
-      className={`navbar-wrapper transition-all duration-400 pointer-events-none z-[60] ${
+      className={`navbar-wrapper transition-all duration-400 z-[60] ${
         isSticky ? "navbar-top-sticky" : "navbar-floating"
       }`}
     >
       <div
         className={`nav-glass flex items-center justify-between
-                   w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] max-w-[1800px]
-                   h-[4.6rem] px-6 sm:px-10 rounded-full pointer-events-auto transition-all duration-400
-                   ${isSticky ? "nav-sticky" : ""}`}
+                     w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] max-w-[1800px]
+                     h-[4.6rem] px-6 sm:px-10 rounded-full pointer-events-auto transition-all duration-400
+                     ${isSticky ? "nav-sticky" : ""}`}
       >
-        {/* Left area (logo on desktop) */}
+        {/* 🔹 Left Logo (Desktop) */}
         <div
           className="hidden md:flex items-center cursor-pointer select-none"
           onClick={(e) => handleSmoothScroll(e, "#hero")}
         >
           <img
-  src="/logo.png"
-  alt="The Corporate Trader"
-  className={`w-auto object-contain transition-transform duration-300 hover:scale-105 ${
-    isSticky ? "logo-sm" : "logo-lg"
-  }`}
-/>
-
+            src="/logo.png"
+            alt="The Corporate Trader"
+            className={`w-auto object-contain transition-transform duration-300 hover:scale-105 ${
+              isSticky ? "logo-sm" : "logo-lg"
+            }`}
+          />
         </div>
 
-        {/* Center logo for mobile */}
+        {/* 🔹 Center Logo (Mobile) */}
         <div
           className="flex md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer select-none z-20"
           onClick={(e) => handleSmoothScroll(e, "#hero")}
@@ -90,7 +94,7 @@ export default function Navbar() {
           <img src="/logo.png" alt="logo" className="logo-img logo-mobile" />
         </div>
 
-        {/* Links (desktop) */}
+        {/* 🔹 Navigation Links (Desktop) */}
         <div className="hidden md:flex flex-grow justify-center">
           <ul className="flex items-center gap-10">
             {NAV_LINKS.map(({ name, href }) => (
@@ -110,7 +114,7 @@ export default function Navbar() {
           </ul>
         </div>
 
-        {/* Mobile toggle */}
+        {/* 🔹 Hamburger Toggle (Mobile) */}
         <button
           onClick={() => setMobileOpen((s) => !s)}
           className="md:hidden text-white text-3xl focus:outline-none relative z-20"
@@ -119,9 +123,12 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* 🔹 Mobile Dropdown Menu */}
       {mobileOpen && (
-        <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] bg-black/80 backdrop-blur-xl rounded-b-2xl z-50 max-w-[1800px] border-t border-cyan-400/20">
+        <div
+          className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] 
+                     bg-black/80 backdrop-blur-xl rounded-b-2xl z-50 max-w-[1800px] border-t border-cyan-400/20"
+        >
           {NAV_LINKS.map(({ name, href }) => (
             <a
               key={name}

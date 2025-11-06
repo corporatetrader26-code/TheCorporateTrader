@@ -66,7 +66,7 @@ const Youtube = () => {
     animateGradient();
   }, [controls]);
 
-  // Track mouse movement for particle parallax
+  // === Mouse & touch parallax ===
   useEffect(() => {
     const handleMove = (e) => {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -83,42 +83,48 @@ const Youtube = () => {
     };
   }, []);
 
-  // Swipe detection
+  // === Swipe detection (mobile + desktop drag) ===
   const touchStartX = useRef(null);
-  const touchCurrentX = useRef(null);
-  const swipeThreshold = 50;
+  const touchEndX = useRef(null);
+  const swipeThreshold = 50; // px to trigger swipe
 
-  const onTouchStart = (e) => {
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    touchStartX.current = x;
-    touchCurrentX.current = x;
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
   };
-  const onTouchMove = (e) => {
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    touchCurrentX.current = x;
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches ? e.touches[0].clientX : e.clientX;
   };
-  const onTouchEnd = () => {
-    const delta = touchCurrentX.current - touchStartX.current;
-    if (Math.abs(delta) > swipeThreshold) {
-      if (delta > 0) handlePrev();
-      else handleNext();
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+
+    const deltaX = touchEndX.current - touchStartX.current;
+
+    if (Math.abs(deltaX) > swipeThreshold) {
+      if (deltaX > 0) handlePrev(); // swipe right → previous
+      else handleNext(); // swipe left → next
     }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
-  // Desktop pointer drag
-  const onPointerDown = (e) => {
-    onTouchStart(e);
-    window.addEventListener("pointermove", onTouchMove);
+  // Desktop pointer drag (for swipe on computers)
+  const handlePointerDown = (e) => {
+    handleTouchStart(e);
+    window.addEventListener("pointermove", handleTouchMove);
     window.addEventListener("pointerup", handlePointerUp);
   };
+
   const handlePointerUp = (e) => {
-    onTouchMove(e);
-    onTouchEnd();
-    window.removeEventListener("pointermove", onTouchMove);
+    handleTouchMove(e);
+    handleTouchEnd();
+    window.removeEventListener("pointermove", handleTouchMove);
     window.removeEventListener("pointerup", handlePointerUp);
   };
 
-  // Navigation logic with animation direction
+  // === Navigation logic ===
   const handleNext = () => {
     setDirection(1);
     setCurrent((prev) => (prev + 1) % videos.length);
@@ -147,14 +153,14 @@ const Youtube = () => {
         </Canvas>
       </div>
 
-      {/* === Animated YouTube Player === */}
+      {/* === YouTube Player with animation & swipe === */}
       <div
         className="relative z-10 w-[90%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[900px] 
                    aspect-video rounded-2xl overflow-hidden shadow-2xl"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        onPointerDown={onPointerDown}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onPointerDown={handlePointerDown}
       >
         <AnimatePresence custom={direction} mode="wait">
           <motion.iframe
