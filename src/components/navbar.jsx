@@ -73,12 +73,13 @@ export default function Navbar() {
           onClick={(e) => handleSmoothScroll(e, "#hero")}
         >
           <img
-            src="/logo.png"
-            alt="The Corporate Trader"
-            className={`logo-img transition-transform duration-300 ${
-              isSticky ? "logo-sm" : "logo-lg"
-            }`}
-          />
+  src="/logo.png"
+  alt="The Corporate Trader"
+  className={`w-auto object-contain transition-transform duration-300 hover:scale-105 ${
+    isSticky ? "logo-sm" : "logo-lg"
+  }`}
+/>
+
         </div>
 
         {/* Center logo for mobile */}
