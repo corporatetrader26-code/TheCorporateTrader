@@ -41,8 +41,11 @@ const ResultsSection = () => {
         Consistent, structured guidance backed by real market methodology.
       </p>
 
-      {/* Fade Edges */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-[#0a0a0f] via-transparent to-[#0a0a0f]" />
+    <div
+  className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-[#0a0a0f] via-transparent to-[#0a0a0f] hidden lg:block"
+/>
+
+
 
       {/* Marquee Container */}
       <div className="relative w-full overflow-hidden">

@@ -3,7 +3,7 @@
 html, body {
   overflow-x: hidden;
   scroll-behavior: smooth;
-   -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 }
 
 @tailwind base;
@@ -55,33 +55,28 @@ html, body {
   20% { opacity: 0.6; }
 }
 
-/* ✅ Background Glow Bubbles (Soft White/Ash Tones) */
-.glow-overlay {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  filter: blur(140px);
-  opacity: 0.42;
-  pointer-events: none;
-  animation: glowPulse 6s ease-in-out infinite;
-  background: radial-gradient(circle, rgba(255,255,255,0.32) 0%, rgba(10,10,15,0) 65%);
-  z-index: 0;
-}
-
-.glow-overlay.left {
-  top: -120px;
-  left: -120px;
-}
-
+/* 🚫 PERMANENTLY DISABLED: Background Glow Bubbles */
+.glow-overlay,
+.glow-overlay.left,
 .glow-overlay.right {
-  top: -120px;
-  right: -120px;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  filter: none !important;
+  background: none !important;
+  pointer-events: none !important;
+  animation: none !important;
+  z-index: -9999 !important;
 }
 
 /* NAV FIX */
 nav {
   z-index: 50;
 }
+
 @keyframes footer-glow {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
@@ -90,7 +85,8 @@ nav {
 .footer-glow {
   animation: footer-glow 4s infinite ease-in-out;
 }
-/* Add in index.css */
+
+/* ✅ Cursor Glow (keep as-is, blue cursor trail) */
 .cursor-glow {
   position: fixed;
   top: 0;

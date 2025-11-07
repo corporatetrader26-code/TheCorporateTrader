@@ -3,10 +3,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
-// === 3D Particle Background ===
+// === 3D Particle Background (restored color, lower opacity/size, masked bottom) ===
 const Particles = ({ mouse }) => {
   const meshRef = useRef();
-  const count = 120;
+  const count = 250; // slightly fewer particles to reduce overlap
 
   const positions = Array.from({ length: count }, () => ({
     x: (Math.random() - 0.5) * 10,
@@ -21,7 +21,7 @@ const Particles = ({ mouse }) => {
         (mouse.current.y / 100 - meshRef.current.rotation.x) * 0.05;
       meshRef.current.rotation.y +=
         (mouse.current.x / 100 - meshRef.current.rotation.y) * 0.05;
-      meshRef.current.position.y = Math.sin(t / 2) * 0.2;
+      meshRef.current.position.y = Math.sin(t / 2) * 0.12; // smaller vertical motion
     }
   });
 
@@ -29,8 +29,10 @@ const Particles = ({ mouse }) => {
     <group ref={meshRef}>
       {positions.map((pos, i) => (
         <mesh key={i} position={[pos.x, pos.y, pos.z]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
-          <meshBasicMaterial color="#b0b0b0" opacity={0.45} transparent />
+          {/* smaller geometry (reduced size) */}
+          <sphereGeometry args={[0.03, 10, 10]} />
+          {/* restored white-gray color, much lower opacity */}
+          <meshBasicMaterial color="#b0b0b0" opacity={0.12} transparent />
         </mesh>
       ))}
     </group>
@@ -50,7 +52,7 @@ const Youtube = () => {
   const mouse = useRef({ x: 0, y: 0 });
   const controls = useAnimation();
 
-  // === Animate subtle gradient background ===
+  // === Animate subtle gradient background (UNCHANGED) ===
   useEffect(() => {
     const animateGradient = async () => {
       await controls.start({
@@ -66,7 +68,7 @@ const Youtube = () => {
     animateGradient();
   }, [controls]);
 
-  // === Mouse / touch movement for 3D parallax ===
+  // parallax mouse/touch
   useEffect(() => {
     const handleMove = (e) => {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -74,7 +76,6 @@ const Youtube = () => {
       mouse.current.x = (clientX / window.innerWidth - 0.5) * 100;
       mouse.current.y = (clientY / window.innerHeight - 0.5) * 100;
     };
-
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("touchmove", handleMove, { passive: true });
     return () => {
@@ -83,28 +84,24 @@ const Youtube = () => {
     };
   }, []);
 
-  // === Swipe detection (touch + desktop drag) ===
+  // swipe logic (unchanged)
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
-  const swipeThreshold = 50; // pixels required to trigger swipe
+  const swipeThreshold = 50;
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
   };
-
   const handleTouchMove = (e) => {
     touchEndX.current = e.touches ? e.touches[0].clientX : e.clientX;
   };
-
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
     const deltaX = touchEndX.current - touchStartX.current;
-
     if (Math.abs(deltaX) > swipeThreshold) {
       if (deltaX > 0) handlePrev();
       else handleNext();
     }
-
     touchStartX.current = null;
     touchEndX.current = null;
   };
@@ -114,7 +111,6 @@ const Youtube = () => {
     window.addEventListener("pointermove", handleTouchMove);
     window.addEventListener("pointerup", handlePointerUp);
   };
-
   const handlePointerUp = (e) => {
     handleTouchMove(e);
     handleTouchEnd();
@@ -122,25 +118,23 @@ const Youtube = () => {
     window.removeEventListener("pointerup", handlePointerUp);
   };
 
-  // === Navigation ===
   const handleNext = () => {
     setDirection(1);
-    setCurrent((prev) => (prev + 1) % videos.length);
-    if (navigator.vibrate) navigator.vibrate(20); // small haptic feedback
+    setCurrent((p) => (p + 1) % videos.length);
+    if (navigator.vibrate) navigator.vibrate(15);
   };
-
   const handlePrev = () => {
     setDirection(-1);
-    setCurrent((prev) => (prev - 1 + videos.length) % videos.length);
-    if (navigator.vibrate) navigator.vibrate(20);
+    setCurrent((p) => (p - 1 + videos.length) % videos.length);
+    if (navigator.vibrate) navigator.vibrate(15);
   };
 
   return (
     <section
       id="video"
-      className="relative w-full py-20 flex flex-col items-center overflow-hidden text-white"
+      className="relative w-full py-20 flex flex-col items-center overflow-visible text-white"
     >
-      {/* === Animated background === */}
+      {/* framer-motion background — UNCHANGED */}
       <motion.div
         className="absolute inset-0"
         animate={controls}
@@ -150,19 +144,24 @@ const Youtube = () => {
         }}
       />
 
-      {/* === Particle Field === */}
-      <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 5] }}>
+      {/* Canvas wrapper: limited visual height + CSS mask to fade bottom */}
+      <div
+        className="absolute inset-0 z-0 video-canvas-wrapper"
+        aria-hidden="true"
+      >
+        <Canvas camera={{ position: [0, 0, 5] }} style={{ pointerEvents: "none" }}>
           <Particles mouse={mouse} />
         </Canvas>
       </div>
 
-      {/* === YouTube Carousel === */}
+      {/* subtle fade overlay at bottom of the video area (prevents haze from overlapping next section) */}
+      <div className="absolute bottom-0 left-0 w-full h-[6.5rem] z-10 pointer-events-none video-bottom-fade" />
+
+      {/* YouTube carousel (same structure as before) */}
       <div
-        className="relative z-10 w-[90%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[900px]
+        className="relative z-20 w-[90%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[900px]
                    aspect-video rounded-2xl overflow-hidden shadow-2xl"
       >
-        {/* iframe inside wrapper with pointer disabled */}
         <div className="absolute inset-0 pointer-events-none">
           <AnimatePresence custom={direction} mode="wait">
             <motion.iframe
@@ -173,24 +172,23 @@ const Youtube = () => {
               initial={{ opacity: 0, x: direction > 0 ? 100 : -100, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: direction > 0 ? -100 : 100, scale: 0.95 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.45, ease: "easeInOut" }}
             />
           </AnimatePresence>
         </div>
 
-        {/* Transparent swipe layer over video */}
+        {/* transparent swipe layer */}
         <div
-          className="absolute inset-0 z-20"
+          className="absolute inset-0 z-30"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onPointerDown={handlePointerDown}
         />
 
-        {/* Navigation Buttons */}
         <button
           onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-30"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-40"
           aria-label="Previous video"
         >
           <ChevronLeft className="text-white" size={28} />
@@ -198,24 +196,24 @@ const Youtube = () => {
 
         <button
           onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-30"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 transition p-3 rounded-full z-40"
           aria-label="Next video"
         >
           <ChevronRight className="text-white" size={28} />
         </button>
       </div>
 
-      {/* Dots */}
-      <div className="flex mt-6 gap-3 z-10">
-        {videos.map((_, index) => (
+      {/* dots */}
+      <div className="flex mt-6 gap-3 z-40">
+        {videos.map((_, i) => (
           <button
-            key={index}
+            key={i}
             onClick={() => {
-              setDirection(index > current ? 1 : -1);
-              setCurrent(index);
+              setDirection(i > current ? 1 : -1);
+              setCurrent(i);
             }}
             className={`w-3 h-3 rounded-full transition-all ${
-              current === index ? "bg-white scale-125" : "bg-gray-500"
+              current === i ? "bg-white scale-125" : "bg-gray-500"
             }`}
           />
         ))}

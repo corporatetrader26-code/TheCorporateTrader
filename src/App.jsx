@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/navbar";
 import Hero from "./components/hero";
@@ -10,7 +11,8 @@ import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import CursorGlow from "./components/TempCursorGlow";
-import Preloader from "./components/Preloader"; // ✅ new
+import ClickPopEffect from "./components/ClickPopEffect";
+import Preloader from "./components/Preloader";
 
 import "./index.css";
 
@@ -30,6 +32,8 @@ function App() {
       {!isLoading && (
         <div className="relative min-h-screen w-full text-white overflow-x-hidden bg-gradient-to-b from-[#0a0a0a] to-[#111]">
           <Navbar />
+
+          {/* Main content */}
           <main className="relative z-[3] flex flex-col items-center w-full">
             <Hero />
             <Youtube />
@@ -40,9 +44,18 @@ function App() {
             <ContactSection />
             <Footer />
           </main>
+
+          {/* Cursor Glow Effect */}
           <CursorGlow />
+
+          {/* ❄️ Snow Layer (under pop/click effects) */}
           <div className="absolute inset-0 pointer-events-none z-[90]">
             <SnowEffect />
+          </div>
+
+          {/* 💥 Click Pop Effect (highest visual layer, interactive) */}
+          <div className="fixed inset-0 z-[999] pointer-events-none">
+            <ClickPopEffect />
           </div>
         </div>
       )}
