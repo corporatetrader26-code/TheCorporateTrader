@@ -155,7 +155,7 @@ const Youtube = () => {
       </div>
 
       {/* subtle fade overlay at bottom of the video area (prevents haze from overlapping next section) */}
-      <div className="absolute bottom-0 left-0 w-full h-[6.5rem] z-10 pointer-events-none video-bottom-fade" />
+      
 
       {/* YouTube carousel (same structure as before) */}
       <div

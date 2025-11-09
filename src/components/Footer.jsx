@@ -38,7 +38,7 @@ export default function Footer() {
             🚀 Join Telegram
           </a>
 
-          <p className="text-gray-400 mt-4 text-sm">support@thecorporatetrader.com</p>
+          <p className="text-gray-400 mt-4 text-sm">corporatetrader26@gmail.com</p>
         </div>
 
       </div>
