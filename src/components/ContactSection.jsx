@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Send, MessageCircle } from "lucide-react";
+import Swal from "sweetalert2";
+import emailjs from "@emailjs/browser"; // ✅ Import EmailJS
 
-// Floating particles component (background)
+// ---------------- Floating Particles ---------------- //
 const FloatingParticles = () => {
   const particles = Array.from({ length: 30 });
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((_, i) => (
@@ -34,16 +35,80 @@ const FloatingParticles = () => {
   );
 };
 
+// ---------------- Main Contact Section ---------------- //
 export default function ContactSection() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const controls = useAnimation();
   const sectionRef = useRef(null);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-  const handleSubmit = (e) => {
+  // Handle input change
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  // Handle form submit (SheetDB + EmailJS + popup)
+  const handleSubmit = async (e) => {
     e.preventDefault();
     controls.start({ scale: [1, 1.05, 1], transition: { duration: 0.3 } });
-    setTimeout(() => alert("✅ Message sent successfully! We'll get back to you soon."), 300);
+
+    try {
+      // 1️⃣ Send data to SheetDB
+      const response = await fetch("https://sheetdb.io/api/v1/atokztnujkdkm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: [
+            {
+              Name: formData.name,
+              Email: formData.email,
+              Message: formData.message,
+            },
+          ],
+        }),
+      });
+
+      // 2️⃣ Send auto-reply email with EmailJS
+      // ⚙️ Your template expects only {{name}}
+      const emailParams = {
+        name: formData.name,
+        email: formData.email, // matches your template placeholder
+      };
+
+      const emailResponse = await emailjs.send(
+        "service_p89yo3r",      // your service ID
+        "template_ydzhwjj",     // your template ID
+        emailParams,            // correct variables
+        "bBUX_lbllZxpEp7AM"     // your public key
+      );
+
+      // 3️⃣ Show success popup if both succeed
+      if (response.ok && emailResponse.status === 200) {
+        Swal.fire({
+          title: "✅ Message Sent!",
+          text: "Thank you for contacting us. A confirmation email has been sent to your inbox!",
+          icon: "success",
+          background: "#0a0a0f",
+          color: "#00ffff",
+          confirmButtonColor: "#00ffff",
+          confirmButtonText: "Awesome!",
+          customClass: {
+            popup: "rounded-2xl shadow-lg border border-cyan-400/30 backdrop-blur-lg",
+          },
+        });
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Error details:", error);
+      Swal.fire({
+        title: "⚠️ Error",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#ef4444",
+        background: "#0a0a0f",
+        color: "#fff",
+      });
+    }
   };
 
   // Glow effect following mouse
@@ -72,7 +137,7 @@ export default function ContactSection() {
       {/* Floating Particles */}
       <FloatingParticles />
 
-      {/* Soft moving glow trail */}
+      {/* Glow Trail */}
       <div
         ref={glowRef}
         className="absolute w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none transition-transform duration-1000"
@@ -87,7 +152,9 @@ export default function ContactSection() {
         viewport={{ once: true }}
         className="max-w-2xl mx-auto text-center mb-14 relative z-10"
       >
-        <h2 className="text-4xl font-bold mb-4">Let’s <i>Connect</i></h2>
+        <h2 className="text-4xl font-bold mb-4">
+          Let’s <i>Connect</i>
+        </h2>
         <p className="text-gray-400 text-base">
           Have questions or want to collaborate? Fill the form below — or reach us directly on Telegram.
         </p>
@@ -102,17 +169,8 @@ export default function ContactSection() {
         viewport={{ once: true }}
         className="relative max-w-2xl mx-auto bg-gradient-to-br from-[#161616] to-[#0d0d0d] border border-white/10 rounded-3xl p-8 md:p-10 shadow-[0_0_50px_rgba(0,255,255,0.05)] z-10 backdrop-blur-md"
       >
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            visible: { transition: { staggerChildren: 0.15 } },
-          }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6"
-        >
-          <motion.input
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+          <input
             type="text"
             name="name"
             placeholder="Your Name"
@@ -121,8 +179,7 @@ export default function ContactSection() {
             className="w-full p-4 rounded-xl bg-transparent border border-white/20 focus:border-cyan-400/60 outline-none text-white placeholder-gray-400"
             required
           />
-          <motion.input
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+          <input
             type="email"
             name="email"
             placeholder="Your Email"
@@ -131,14 +188,9 @@ export default function ContactSection() {
             className="w-full p-4 rounded-xl bg-transparent border border-white/20 focus:border-cyan-400/60 outline-none text-white placeholder-gray-400"
             required
           />
-        </motion.div>
+        </div>
 
-        <motion.textarea
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
+        <textarea
           name="message"
           placeholder="Your Message..."
           value={formData.message}
